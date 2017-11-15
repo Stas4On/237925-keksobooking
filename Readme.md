@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Станислав Кузнецов](https://up.htmlacademy.ru/javascript/11/user/237925).
-* Наставник: `Неизвестно`.
+* Наставник: [Виталий Яковенко](https://up.htmlacademy.ru/javascript/11/user/376639).
 
 ---
 
