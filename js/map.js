@@ -6,6 +6,7 @@ var TYPE = ['flat', 'house', 'bungalo'];
 var CHECKIN = ['12:00', '13:00', '14:00'];
 var CHECKOUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var ADS_COUNT = 8;
 
 // объявление фукнций
 
@@ -18,7 +19,7 @@ function getRandomInt(min, max) {
 function getAvatar() {
   var sourceImg = [];
   var randomAvatar;
-  for (var i = 1; i <= 8; i++) {
+  for (var i = 1; i <= ADS_COUNT; i++) {
     sourceImg[i - 1] = 'img/avatars/user0' + i + '.png';
   }
   randomAvatar = sourceImg[getRandomInt(0, sourceImg.length)];
@@ -26,7 +27,7 @@ function getAvatar() {
   return randomAvatar;
 }
 
-// Функция генерации рандомного количества фич
+// Функция возвращает рандомное количество фич
 function getFeatures() {
   var features = [];
   var numberFeatures = getRandomInt(1, FEATURES.length);
@@ -36,25 +37,25 @@ function getFeatures() {
   return features;
 }
 
-// Функция получения заголовка объявления
+// Функция возвращает заголовок объявления
 function getRandomTitle() {
 
   return TITLE[getRandomInt(0, TITLE.length)];
 }
 
-// Функция получения стоимости за ночь
+// Функция возвращает стоимости за ночь
 function getPrice() {
 
   return getRandomInt(1, 1000 + 1) * 1000;
 }
 
-// Функция получения типа жилища
+// Функция возвращает тип жилища
 function getRandomType() {
 
   return TYPE[getRandomInt(0, TYPE.length)];
 }
 
-// Функция вывода названия жилища в зависимоти от типа
+// Функция возвращает названия жилища в зависимоти от типа
 function getType(type) {
   switch (type) {
     case 'flat':
@@ -78,43 +79,8 @@ function getCheckout() {
   return CHECKOUT[getRandomInt(0, CHECKOUT.length)];
 }
 
-// Функция отрисовки карточек объявлений
-function renderAd() {
-  var adsElement = similarAds.cloneNode(true);
-
-  adsElement.querySelector('img').setAttribute('src', ad.author.avatar);
-  adsElement.querySelector('h3').textContent = ad.offer.title;
-  adsElement.querySelector('.popup__price').innerHTML = ad.offer.price + '&#x20bd;/ночь';
-  adsElement.querySelector('h4').textContent = getType(ad.offer.type);
-  adsElement.querySelector('.popup__rooms').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
-  adsElement.querySelector('.popup__checkin').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
-  adsElement.querySelector('.popup__description').textContent = ad.offer.description;
-  // Удаление элементов списка
-  var oldLi = adsElement.querySelectorAll('.feature');
-
-  for (i = 0; i < oldLi.length; i++) {
-    oldLi[i].remove();
-  }
-
-  // Добавление элемонтов списка
-  var fragment = document.createDocumentFragment();
-
-  for (i = 0; i < ad.offer.features.length; i++) {
-    var li = document.createElement('li');
-    li.classList.add('feature');
-    li.classList.add('feature--' + ad.offer.features[i]);
-
-    fragment.appendChild(li);
-  }
-
-  adsElement.querySelector('.popup__features').appendChild(fragment);
-  adsElement.querySelector('.map__pin').remove();
-
-  return adsElement;
-}
-
-// Функция получения объекта
-function getAd() {
+// Функция возвращает объект
+function createPin() {
   var loc = {
     x: getRandomInt(300, 900 + 1),
     y: getRandomInt(100, 500 + 1)
@@ -141,12 +107,24 @@ function getAd() {
   };
 }
 
-// Функция отрисовки указателей на карте
-function renderPins() {
-  var pinElement = document.querySelector('.map__pin').cloneNode();
+// Функция возвращает массив объектов
+function createPins() {
+  var ads = [];
+
+  for (var i = 0; i < ADS_COUNT; i += 1) {
+    ads.push(createPin());
+  }
+
+  return ads;
+}
+
+// Функция отрисовки указателей
+function renderPins(ad) {
+  var mapPin = document.querySelector('.map__pin');
+  var pinElement = mapPin.cloneNode();
   var pinElementImg = document.querySelector('.map__pin img').cloneNode();
 
-  pinElement.setAttribute('style', 'left: ' + ad.location.x + 'px; top: ' + ad.location.y + 'px;');
+  pinElement.setAttribute('style', 'left: ' + (ad.location.x - mapPin.getAttribute('width') / 2) + 'px; top: ' + (ad.location.y - (+mapPin.getAttribute('height') + 18)) + 'px;');
   pinElement.setAttribute('class', 'map__pin');
   pinElementImg.setAttribute('src', ad.author.avatar);
   pinElementImg.setAttribute('width', '40');
@@ -156,22 +134,55 @@ function renderPins() {
   return pinElement;
 }
 
+// Функция отрисовки карточек объявлений
+function renderAd(ad) {
+  var similarAds = document.querySelector('template').content;
+  var adsElement = similarAds.cloneNode(true);
+  var ul = adsElement.querySelector('.popup__features');
+
+  adsElement.querySelector('img').setAttribute('src', ad.author.avatar);
+  adsElement.querySelector('h3').textContent = ad.offer.title;
+  adsElement.querySelector('.popup__price').innerHTML = ad.offer.price + '&#x20bd;/ночь';
+  adsElement.querySelector('h4').textContent = getType(ad.offer.type);
+  adsElement.querySelector('.popup__rooms').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
+  adsElement.querySelector('.popup__checkin').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
+  adsElement.querySelector('.popup__description').textContent = ad.offer.description;
+  // Удаление элементов списка
+  ul.innerHTML = '';
+
+  // Добавление элемонтов списка
+  var fragment = document.createDocumentFragment();
+
+  for (i = 0; i < ad.offer.features.length; i++) {
+    var li = document.createElement('li');
+    li.classList.add('feature');
+    li.classList.add('feature--' + ad.offer.features[i]);
+
+    fragment.appendChild(li);
+  }
+
+  ul.appendChild(fragment);
+  adsElement.querySelector('.map__pin').remove();
+
+  return adsElement;
+}
+
 // Работа с DOM
-var totalNumberAds = 8;
 var map = document.querySelector('.map');
 var mapFilter = map.querySelector('.map__filters-container');
 
 map.classList.remove('map--faded');
 
-var similarAds = document.querySelector('template').content;
 var fragment = document.createDocumentFragment();
-var arrayAds = [];
+// создаем объекты
+var ads = createPins();
 
-for (var i = 0; i < totalNumberAds; i++) {
-  var ad = getAd();
-  fragment.appendChild(renderPins());
-  arrayAds[i] = ad;
+// ренедерим их в ДОМ
+for (var i = 0; i < ads.length; i++) {
+  fragment.appendChild(renderPins(ads[i]));
 }
 
 document.querySelector('.map__pins').appendChild(fragment);
-document.querySelector('.map').insertBefore(renderAd(), mapFilter);
+
+// рендерим первый элемент из массива в попап
+document.querySelector('.map').insertBefore(renderAd(ads[0]), mapFilter);
