@@ -136,7 +136,7 @@ function renderPins(ad) {
 
 // Функция отрисовки карточек объявлений
 function renderAd(ad) {
-  var similarAds = document.querySelector('template').content;
+  var similarAds = document.querySelector('template map__card').content;
   var adsElement = similarAds.cloneNode(true);
   var ul = adsElement.querySelector('.popup__features');
 
@@ -162,7 +162,6 @@ function renderAd(ad) {
   }
 
   ul.appendChild(fragment);
-  adsElement.querySelector('.map__pin').remove();
 
   return adsElement;
 }
