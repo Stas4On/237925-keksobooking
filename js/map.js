@@ -134,6 +134,7 @@ function renderPins(ad, count) {
   pinElementImg.setAttribute('height', '40');
   pinElementImg.setAttribute('draggable', 'false');
   pinElement.appendChild(pinElementImg);
+  pinElement.addEventListener('click', clickHandlerPin, false);
   return pinElement;
 }
 
@@ -182,17 +183,11 @@ function addMapPins() {
   document.querySelector('.map__pins').appendChild(fragment);
 }
 
-// Добавляет обработчик событий пинам
-function addEventListenerPin() {
-  var mapPins = map.querySelectorAll('.map__pin');
-  for (var i = 0; i < mapPins.length; i++) {
-    mapPins[i].addEventListener('click', clickHandlerPin);
-  }
-}
-
 //  при клике на пин делает его активным, если до этого был другой активный пин, то удаляет у него признаки активности
 // так же проверяет открыт ли попап, если да,то закрывает его и вызывает функцию отрисовки нового попапа
 function clickHandlerPin(evt) {
+  evt.preventDefault();
+  var clickedElement = map.querySelector('.map__pin--active');
   if (clickedElement) {
     clickedElement.classList.remove('map__pin--active');
     var popup = map.querySelector('.popup');
@@ -243,14 +238,6 @@ var formElement = form.querySelectorAll('.form__element');
 var mapPinMain = map.querySelector('.map__pin--main');
 // создаем объекты
 var ads = createPins();
-var clickedElement = null;
-
-// Дизаблит блоки формы fieldset
-(function () {
-  for (var i = 0; i < formElement.length; i++) {
-    formElement[i].setAttribute('disabled', 'disabled');
-  }
-})();
 
 // активирует карту и форму, запускает рендер пинов и добавление к ним обработчиков
 mapPinMain.addEventListener('mouseup', function () {
@@ -258,7 +245,6 @@ mapPinMain.addEventListener('mouseup', function () {
   form.classList.remove('notice__form--disabled');
 
   addMapPins();
-  addEventListenerPin();
 
   // Убирает свойство disabled у fieldset формы
   for (var i = 0; i < formElement.length; i++) {
