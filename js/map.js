@@ -109,17 +109,6 @@ function createPin() {
   };
 }
 
-// Функция возвращает массив объектов
-function createPins() {
-  var ads = [];
-
-  for (var i = 0; i < ADS_COUNT; i += 1) {
-    ads.push(createPin());
-  }
-
-  return ads;
-}
-
 // Функция отрисовки указателей
 function renderPin(ad) {
   var mapPin = document.querySelector('.map__pin');
@@ -134,19 +123,12 @@ function renderPin(ad) {
   pinElementImg.setAttribute('draggable', 'false');
   pinElement.appendChild(pinElementImg);
   pinElement.addEventListener('click', function (evt) {
-    clickHandlerPin(evt);
+    var clickedElement = evt.currentTarget;
+    removePinActive(evt);
     openPopup(ad);
+    clickedElement.classList.add('map__pin--active');
   }, false);
   return pinElement;
-}
-
-function clickHandlerPin(evt) {
-  evt.preventDefault();
-  var clickedElement = map.querySelector('.map__pin--active');
-  if (clickedElement) {
-    clickedElement.classList.remove('map__pin--active');
-  }
-  evt.currentTarget.classList.add('map__pin--active');
 }
 
 // Функция отрисовки карточек объявлений
@@ -187,18 +169,12 @@ function addMapPins() {
   var fragment = document.createDocumentFragment();
 
   // рендерим их в ДОМ
-  for (var i = 0; i < ads.length; i++) {
-    fragment.appendChild(renderPin(ads[i], i));
+  for (var i = 0; i < ADS_COUNT; i++) {
+    var pin = createPin();
+    fragment.appendChild(renderPin(pin, i));
   }
 
   document.querySelector('.map__pins').appendChild(fragment);
-  mapPinMain.addEventListener('click', function (evt) {
-    clickHandlerPin(evt);
-    var popup = map.querySelector('.popup');
-    if (popup) {
-      map.removeChild(popup);
-    }
-  });
 }
 
 // отрисовывает попап и добавляет обработчик кнопке закрытия и document
@@ -227,30 +203,47 @@ function onPopupEscPress(evt) {
 // Закрыти попапа со снятием признака активности у пина и удаление обработчика у document
 function closePopup() {
   var popup = map.querySelector('.popup');
-  map.removeChild(popup);
-  map.querySelector('.map__pin--active').classList.remove('map__pin--active');
+  if (popup) {
+    map.removeChild(popup);
+  }
+  removePinActive();
   document.removeEventListener('keydown', onPopupEscPress);
 }
 
-// Работа с DOM
-var map = document.querySelector('.map');
-var form = document.querySelector('.notice__form');
-var formElement = form.querySelectorAll('.form__element');
-var mapPinMain = map.querySelector('.map__pin--main');
-// создаем объекты
-var ads = createPins();
+function removePinActive() {
+  var clickedElement = map.querySelector('.map__pin--active');
+  if (clickedElement) {
+    clickedElement.classList.remove('map__pin--active');
+  }
+}
 
-// активирует карту и форму, запускает рендер пинов и добавление к ним обработчиков
-mapPinMain.addEventListener('mouseup', function () {
+function startUsed(evt) {
+  evt.currentTarget.removeEventListener('mouseup', startUsed);
+  var form = document.querySelector('.notice__form');
   map.classList.remove('map--faded');
   form.classList.remove('notice__form--disabled');
-
   addMapPins();
 
   // Убирает свойство disabled у fieldset формы
+  var formElement = form.querySelectorAll('.form__element');
   for (var i = 0; i < formElement.length; i++) {
-    formElement[i].removeAttribute('disabled', 'disabled');
+    formElement[i].removeAttribute('disabled');
   }
-});
+  // Добавляет обработчик события на главный пин
+  // при клике переносит --active на него, закрывает попап
+  evt.currentTarget.addEventListener('click', function (e) {
+    var clickedElement = e.currentTarget;
+    closePopup();
+    removePinActive();
+    clickedElement.classList.add('map__pin--active');
+  }, false);
+}
+
+
+// Работа с DOM
+var map = document.querySelector('.map');
+
+// активирует карту и форму, запускает рендер пинов и добавление к ним обработчиков
+map.querySelector('.map__pin--main').addEventListener('mouseup', startUsed);
 
 
