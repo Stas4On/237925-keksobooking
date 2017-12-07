@@ -203,12 +203,17 @@ function addMapPins() {
 
 // отрисовывает попап и добавляет обработчик кнопке закрытия и document
 function openPopup(obj) {
+  var mapFilter = map.querySelector('.map__filters-container');
   var popup = map.querySelector('.popup');
   if (popup) {
     map.removeChild(popup);
   }
-  map.insertBefore(renderAd(obj), mapFilter);
-  addEventListenerPopupClose();
+
+  popup = renderAd(obj);
+  map.insertBefore(popup, mapFilter);
+
+  var popupClose = map.querySelector('.popup__close');
+  popupClose.addEventListener('click', closePopup);
   document.addEventListener('keydown', onPopupEscPress);
 }
 
@@ -227,28 +232,8 @@ function closePopup() {
   document.removeEventListener('keydown', onPopupEscPress);
 }
 
-// Добавляет обработчик событий кнопке закрытия попапа
-function addEventListenerPopupClose() {
-  var popupClose = map.querySelector('.popup__close');
-  popupClose.addEventListener('click', closePopup);
-}
-
-function clickHandlerMainPin(evt) {
-  evt.preventDefault();
-  var clickedElement = map.querySelector('.map__pin--active');
-  if (clickedElement) {
-    clickedElement.classList.remove('map__pin--active');
-  }
-  evt.currentTarget.classList.add('map__pin--active');
-  if (map.querySelector('.popup')) {
-    closePopup();
-  }
-}
-
-
 // Работа с DOM
 var map = document.querySelector('.map');
-var mapFilter = map.querySelector('.map__filters-container');
 var form = document.querySelector('.notice__form');
 var formElement = form.querySelectorAll('.form__element');
 var mapPinMain = map.querySelector('.map__pin--main');
