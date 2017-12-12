@@ -217,9 +217,27 @@ function removePinActive() {
   }
 }
 
+function checkCapacity(capacity, room) {
+  if ((+capacity.value < +room.value && +room.value !== 100 && +capacity.value !== 0) || (+room.value === 100 && +capacity.value === 0)) {
+    capacity.style.borderColor = '';
+    room.style.borderColor = '';
+    return false;
+  } else {
+    capacity.style.borderColor = 'red';
+    room.style.borderColor = 'red';
+    return true;
+  }
+}
+
 function startUsed(evt) {
   evt.currentTarget.removeEventListener('mouseup', startUsed);
   var form = document.querySelector('.notice__form');
+  var timeIn = form.querySelector('select[name = \'timein\']');
+  var timeOut = form.querySelector('select[name = \'timeout\']');
+  var type = form.querySelector('select[name = \'type\']');
+  var price = form.querySelector('input[name = \'price\']');
+  var capacity = form.querySelector('select[name = \'capacity\']');
+  var room = form.querySelector('select[name = \'rooms\']');
   map.classList.remove('map--faded');
   form.classList.remove('notice__form--disabled');
   addMapPins();
@@ -237,13 +255,36 @@ function startUsed(evt) {
     removePinActive();
     clickedElement.classList.add('map__pin--active');
   }, false);
-}
 
+  type.addEventListener('change', function () {
+    if (type.value === 'bungalo') {
+      price.setAttribute('min', '0');
+    } else if (type.value === 'flat') {
+      price.setAttribute('min', '1000');
+    } else if (type.value === 'house') {
+      price.setAttribute('min', '5000');
+    } else {
+      price.setAttribute('min', '10000');
+    }
+  });
+
+  timeIn.addEventListener('change', function () {
+    timeOut.value = timeIn.value;
+  });
+
+  timeOut.addEventListener('change', function () {
+    timeIn.value = timeOut.value;
+  });
+
+  form.addEventListener('submit', function (event) {
+    if (checkCapacity(capacity, room)) {
+      event.preventDefault();
+    }
+  });
+}
 
 // Работа с DOM
 var map = document.querySelector('.map');
 
 // активирует карту и форму, запускает рендер пинов и добавление к ним обработчиков
 map.querySelector('.map__pin--main').addEventListener('mouseup', startUsed);
-
-
