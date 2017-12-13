@@ -218,7 +218,7 @@ function removePinActive() {
 }
 
 function checkCapacity(capacity, room) {
-  if ((+capacity.value < +room.value && +room.value !== 100 && +capacity.value !== 0) || (+room.value === 100 && +capacity.value === 0)) {
+  if ((+capacity.value <= +room.value && +room.value !== 100 && +capacity.value !== 0) || (+room.value === 100 && +capacity.value === 0)) {
     capacity.style.borderColor = '';
     room.style.borderColor = '';
     return false;
