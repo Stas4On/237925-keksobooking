@@ -17,6 +17,51 @@
     document.querySelector('.map__pins').appendChild(fragment);
   }
 
+  function dragMainPin() {
+    var mainPin = map.querySelector('.map__pin--main');
+    mainPin.addEventListener('mousedown', function (evt) {
+      evt.preventDefault();
+
+      var startCoordinates = {
+        x: evt.clientX,
+        y: evt.clientY
+      };
+
+      var onMouseMove = function (moveEvt) {
+        moveEvt.preventDefault();
+
+        var shift = {
+          x: startCoordinates.x - moveEvt.clientX,
+          y: startCoordinates.y - moveEvt.clientY
+        };
+
+        startCoordinates = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+
+        if (mainPin.offsetTop - shift.y > 500) {
+          mainPin.style.top = '500px';
+        } else if (mainPin.offsetTop - shift.y < 100) {
+          mainPin.style.top = '100px';
+        } else {
+          mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+        }
+        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      };
+
+      var onMouseUp = function (upEvt) {
+        upEvt.preventDefault();
+
+        map.removeEventListener('mousemove', onMouseMove);
+        map.removeEventListener('mouseup', onMouseUp);
+      };
+
+      map.addEventListener('mousemove', onMouseMove);
+      map.addEventListener('mouseup', onMouseUp);
+    });
+  }
+
   function startUsed(evt) {
     evt.currentTarget.removeEventListener('mouseup', startUsed);
     var form = document.querySelector('.notice__form');
@@ -37,6 +82,7 @@
       window.pinUtil.removePinActive();
       clickedElement.classList.add('map__pin--active');
     }, false);
+    dragMainPin();
   }
 
   // Работа с DOM
