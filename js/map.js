@@ -48,6 +48,8 @@
           mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
         }
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+
+        document.querySelector('input[name = \'address\']').value = 'x: ' + mainPin.style.left.replace('px', '') + ', y: ' + mainPin.style.top.replace('px', '');
       };
 
       var onMouseUp = function (upEvt) {
