@@ -22,24 +22,35 @@
     }
   }
 
-  type.addEventListener('change', function () {
-    if (type.value === 'bungalo') {
-      price.setAttribute('min', '0');
-    } else if (type.value === 'flat') {
-      price.setAttribute('min', '1000');
-    } else if (type.value === 'house') {
-      price.setAttribute('min', '5000');
-    } else {
-      price.setAttribute('min', '10000');
+  // возвращает массив значений select
+  function getValues(element) {
+    var values = [];
+    var options = element.querySelectorAll('option');
+    for (var i = 0; i < options.length; i++) {
+      values[i] = options[i].value;
     }
+
+    return values;
+  }
+
+  function syncValueWithMin(element, value) {
+    element.min = value;
+  }
+
+  function syncValues(element, value) {
+    element.value = value;
+  }
+
+  type.addEventListener('change', function () {
+    window.synchronizeFields(type, price, getValues(type), [1000, 0, 5000, 10000], syncValueWithMin);
   });
 
   timeIn.addEventListener('change', function () {
-    timeOut.value = timeIn.value;
+    window.synchronizeFields(timeIn, timeOut, getValues(timeIn), getValues(timeOut), syncValues);
   });
 
   timeOut.addEventListener('change', function () {
-    timeIn.value = timeOut.value;
+    window.synchronizeFields(timeOut, timeIn, getValues(timeOut), getValues(timeIn), syncValues);
   });
 
   form.addEventListener('submit', function (event) {
