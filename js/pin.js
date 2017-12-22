@@ -19,7 +19,7 @@ window.pinUtil = (function () {
       pinElement.addEventListener('click', function (evt) {
         var clickedElement = evt.currentTarget;
         window.pinUtil.removePinActive(evt);
-        window.cardUtil.openPopup(ad);
+        window.showCard(ad);
         clickedElement.classList.add('map__pin--active');
       }, false);
       return pinElement;
