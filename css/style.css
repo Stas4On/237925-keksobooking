@@ -847,3 +847,17 @@ textarea:focus
 {
     background-position: -10px -10px;
 }
+
+.status .status__upload,
+.status .status__download{
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.status .status__download {
+  top: 45px;
+}
