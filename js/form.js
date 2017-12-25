@@ -1,13 +1,6 @@
 'use strict';
 
 (function () {
-  var form = document.querySelector('.notice__form');
-  var timeIn = form.querySelector('select[name = \'timein\']');
-  var timeOut = form.querySelector('select[name = \'timeout\']');
-  var type = form.querySelector('select[name = \'type\']');
-  var price = form.querySelector('input[name = \'price\']');
-  var capacity = form.querySelector('select[name = \'capacity\']');
-  var room = form.querySelector('select[name = \'rooms\']');
 
   // Валидация полей с кол-вом комнат и гостей
   function checkCapacity(guests, rooms) {
@@ -41,6 +34,34 @@
     element.value = value;
   }
 
+  function onLoad(data) {
+    data.reset();
+    status.textContent = 'Данные успешно отправлены';
+    status.setAttribute('style', 'border-color: #5cce5b; background-color: #a6f5a5');
+    setTimeout(function () {
+      status.textContent = '';
+      status.setAttribute('style', 'border-color: transparent');
+    }, 3000);
+  }
+
+  function onError(message) {
+    status.textContent = message;
+    status.setAttribute('style', 'border-color: #fa9; background-color: #ffdde5');
+    setTimeout(function () {
+      status.textContent = '';
+      status.setAttribute('style', 'border-color: transparent');
+    }, 5000);
+  }
+
+  var form = document.querySelector('.notice__form');
+  var status = document.querySelector('.status__upload');
+  var timeIn = form.querySelector('select[name = \'timein\']');
+  var timeOut = form.querySelector('select[name = \'timeout\']');
+  var type = form.querySelector('select[name = \'type\']');
+  var price = form.querySelector('input[name = \'price\']');
+  var capacity = form.querySelector('select[name = \'capacity\']');
+  var room = form.querySelector('select[name = \'rooms\']');
+
   type.addEventListener('change', function () {
     window.synchronizeFields(type, price, getValues(type), [1000, 0, 5000, 10000], syncValueWithMin);
   });
@@ -56,6 +77,9 @@
   form.addEventListener('submit', function (event) {
     if (checkCapacity(capacity, room)) {
       event.preventDefault();
+    } else {
+      event.preventDefault();
+      window.request.upload(form, onLoad, onError);
     }
   });
 })();

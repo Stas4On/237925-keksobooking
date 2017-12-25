@@ -2,19 +2,30 @@
 
 (function () {
 
-  var ADS_COUNT = 8;
-
   // Добавляет пины на карту
   function addMapPins() {
     var fragment = document.createDocumentFragment();
 
-    // рендерим их в ДОМ
-    for (var i = 0; i < ADS_COUNT; i++) {
-      var pin = window.createPin();
-      fragment.appendChild(window.pinUtil.renderPin(pin, i));
+    function onError(message) {
+      status.textContent = message;
+      status.setAttribute('style', 'border-color: #fa9; background-color: #ffdde5');
+      setTimeout(function () {
+        status.textContent = '';
+        status.setAttribute('style', 'border-color: transparent');
+      }, 5000);
     }
 
-    document.querySelector('.map__pins').appendChild(fragment);
+    function onLoad(data) {
+      // рендерим их в ДОМ
+      for (var i = 0; i < data.length; i++) {
+        var pin = data[i];
+        fragment.appendChild(window.pinUtil.renderPin(pin, i));
+      }
+
+      document.querySelector('.map__pins').appendChild(fragment);
+    }
+
+    window.request.download('https://js.dump.academy/keksobooking/data', onLoad, onError);
   }
 
   function dragMainPin() {
@@ -70,7 +81,6 @@
     map.classList.remove('map--faded');
     form.classList.remove('notice__form--disabled');
     addMapPins();
-
     // Убирает свойство disabled у fieldset формы
     var formElement = form.querySelectorAll('.form__element');
     for (var i = 0; i < formElement.length; i++) {
@@ -89,6 +99,7 @@
 
   // Работа с DOM
   // активирует карту и форму, запускает рендер пинов и добавление к ним обработчиков
+  var status = document.querySelector('.status__download');
   var map = document.querySelector('.map');
   map.querySelector('.map__pin--main').addEventListener('mouseup', startUsed);
 
