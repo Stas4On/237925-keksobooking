@@ -64,6 +64,15 @@
 
   type.addEventListener('change', function () {
     window.synchronizeFields(type, price, getValues(type), [1000, 0, 5000, 10000], syncValueWithMin);
+    window.updatePins();
+  });
+
+  price.addEventListener('change', function () {
+    window.updatePins();
+  });
+
+  capacity.addEventListener('change', function () {
+    window.updatePins();
   });
 
   timeIn.addEventListener('change', function () {

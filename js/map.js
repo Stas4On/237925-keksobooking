@@ -1,7 +1,8 @@
 'use strict';
 
 (function () {
-
+  var mapPins = document.querySelector('.map__pins');
+  var pins = [];
   // Добавляет пины на карту
   function addMapPins() {
     var fragment = document.createDocumentFragment();
@@ -15,19 +16,70 @@
       }, 5000);
     }
 
-    function onLoad(data) {
-      // рендерим их в ДОМ
+    function renderPins(data) {
+      // рендерим пины в ДОМ
       for (var i = 0; i < data.length; i++) {
         var pin = data[i];
         fragment.appendChild(window.pinUtil.renderPin(pin, i));
       }
 
-      document.querySelector('.map__pins').appendChild(fragment);
+      mapPins.appendChild(fragment);
     }
+
+    // Записывает загруженные данные в переменную и передает данные в функцию отрисовки пинов на карте
+    var onLoad = function (data) {
+      pins = data;
+      renderPins(pins);
+      console.log(data);
+    };
 
     window.request.download('https://js.dump.academy/keksobooking/data', onLoad, onError);
   }
 
+  // Убирает все пины, кроме главного с карты и отрисовывает заного пины из отфильтрованного массива
+  function render(arrObj) {
+    var fragment = document.createDocumentFragment();
+
+    var takeNumber = arrObj.length > 5 ? 5 : arrObj.length;
+    var mapPin = mapPins.querySelector('.map__pin--main').cloneNode(true);
+    mapPins.innerHTML = '';
+    mapPins.appendChild(mapPin);
+    for (var i = 0; i < takeNumber; i++) {
+      fragment.appendChild(window.pinUtil.renderPin(arrObj[i]));
+    }
+
+    mapPins.appendChild(fragment);
+  }
+
+  // Фильтрует пины созласно значениям в полях формы
+  window.updatePins = function () {
+    var form = document.querySelector('.notice__form');
+    var typeHouse = form.querySelector('select[name = \'type\']').value;
+    var priceHouse = form.querySelector('input[name = \'price\']').value;
+    var roomsHouse = form.querySelector('select[name = \'rooms\']').value;
+    var guestsHouse = form.querySelector('select[name = \'capacity\']').value;
+
+    var sortPins = pins.filter(function (it) {
+      return it.offer.type === typeHouse;
+    }).filter(function (it) {
+      return it.offer.price === priceHouse;
+    })/*.filter(function (it) {
+      return it.offer.rooms === roomsHouse;
+    }).filter(function (it) {
+      return it.offer.rooms === roomsHouse;
+    }).filter(function (it) {
+      return it.offer.guests === guestsHouse;
+    })*/;
+    console.log(typeHouse);
+    console.log(priceHouse);
+    console.log(roomsHouse);
+    console.log(guestsHouse);
+
+    console.log(sortPins);
+    render(sortPins);
+  };
+
+  // Перетаскивание основного пина
   function dragMainPin() {
     var mainPin = map.querySelector('.map__pin--main');
     mainPin.addEventListener('mousedown', function (evt) {
