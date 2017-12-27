@@ -11,7 +11,6 @@
 
   // Добавляет пины на карту
   function addMapPins() {
-    var fragment = document.createDocumentFragment();
 
     function onError(message) {
       status.textContent = message;
@@ -22,11 +21,16 @@
       }, 5000);
     }
 
+    // Убирает все пины, кроме главного с карты и отрисовывает пины из массива
     window.renderPins = function (data) {
-      // рендерим пины в ДОМ
-      for (var i = 0; i < data.length; i++) {
-        var pin = data[i];
-        fragment.appendChild(window.pinUtil.renderPin(pin, i));
+      var fragment = document.createDocumentFragment();
+
+      var takeNumber = data.length > 5 ? 5 : data.length;
+      var mapPin = mapPins.querySelector('.map__pin--main').cloneNode(true);
+      mapPins.innerHTML = '';
+      mapPins.appendChild(mapPin);
+      for (var i = 0; i < takeNumber; i++) {
+        fragment.appendChild(window.pinUtil.renderPin(data[i]));
       }
 
       mapPins.appendChild(fragment);
