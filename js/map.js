@@ -1,13 +1,17 @@
 'use strict';
 
 (function () {
+  var COUNT_PINS = 5;
+
+  var pins = [];
   var mapPins = document.querySelector('.map__pins');
   var sortForm = document.querySelector('.map__filters');
-  var typeHouse = sortForm.querySelector('select[name = \'housing-type\']');
-  var priceHouse = sortForm.querySelector('select[name = \'housing-price\']');
-  var roomsHouse = sortForm.querySelector('select[name = \'housing-rooms\']');
-  var guestsHouse = sortForm.querySelector('select[name = \'housing-guests\']');
-  var featuresHouse = sortForm.querySelectorAll('input');
+
+  // Записывает загруженные данные в переменную и передает данные в функцию отрисовки пинов на карте
+  var onLoad = function (data) {
+    pins = data;
+    window.renderPins(pins);
+  };
 
   // Добавляет пины на карту
   function addMapPins() {
@@ -25,10 +29,11 @@
     window.renderPins = function (data) {
       var fragment = document.createDocumentFragment();
 
-      var takeNumber = data.length > 5 ? 5 : data.length;
+      var takeNumber = data.length > COUNT_PINS ? COUNT_PINS : data.length;
       var mapPin = mapPins.querySelector('.map__pin--main').cloneNode(true);
       mapPins.innerHTML = '';
       mapPins.appendChild(mapPin);
+      dragMainPin();
       for (var i = 0; i < takeNumber; i++) {
         fragment.appendChild(window.pinUtil.renderPin(data[i]));
       }
@@ -36,7 +41,16 @@
       mapPins.appendChild(fragment);
     };
 
-    window.request.download('https://js.dump.academy/keksobooking/data', window.onLoad, onError);
+    // Сортирует пины при изменении формы
+    sortForm.addEventListener('change', function (e) {
+      e.preventDefault();
+
+      window.debounce(function () {
+        window.updatePins(pins);
+      });
+    }, false);
+
+    window.request.download('https://js.dump.academy/keksobooking/data', onLoad, onError);
   }
 
   // Перетаскивание основного пина
@@ -108,23 +122,6 @@
       clickedElement.classList.add('map__pin--active');
     }, false);
     dragMainPin();
-    typeHouse.addEventListener('change', function () {
-      window.debounce(window.updatePins);
-    });
-    priceHouse.addEventListener('change', function () {
-      window.debounce(window.updatePins);
-    });
-    roomsHouse.addEventListener('change', function () {
-      window.debounce(window.updatePins);
-    });
-    guestsHouse.addEventListener('change', function () {
-      window.debounce(window.updatePins);
-    });
-    for (i = 0; i < featuresHouse.length; i++) {
-      featuresHouse[i].addEventListener('change', function () {
-        window.debounce(window.updatePins);
-      });
-    }
   }
 
   // Работа с DOM
