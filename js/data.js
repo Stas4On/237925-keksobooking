@@ -2,10 +2,10 @@
 
 (function () {
 // объявление констант
-  var TITLE = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
-  var TYPE = ['flat', 'house', 'bungalo'];
-  var CHECKIN = ['12:00', '13:00', '14:00'];
-  var CHECKOUT = ['12:00', '13:00', '14:00'];
+  var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+  var TYPES = ['flat', 'house', 'bungalo'];
+  var CHECKINS = ['12:00', '13:00', '14:00'];
+  var CHECKOUTS = ['12:00', '13:00', '14:00'];
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var ADS_COUNT = 8;
 
@@ -41,7 +41,7 @@
   // Функция возвращает заголовок объявления
   function getRandomTitle() {
 
-    return TITLE[getRandomInt(0, TITLE.length)];
+    return TITLES[getRandomInt(0, TITLES.length)];
   }
 
   // Функция возвращает стоимости за ночь
@@ -53,19 +53,19 @@
   // Функция возвращает тип жилища
   function getRandomType() {
 
-    return TYPE[getRandomInt(0, TYPE.length)];
+    return TYPES[getRandomInt(0, TYPES.length)];
   }
 
   // Функция получения времени заеезда
   function getCheckin() {
 
-    return CHECKIN[getRandomInt(0, CHECKIN.length)];
+    return CHECKINS[getRandomInt(0, CHECKINS.length)];
   }
 
   // Функция получения времени выезда
   function getCheckout() {
 
-    return CHECKOUT[getRandomInt(0, CHECKOUT.length)];
+    return CHECKOUTS[getRandomInt(0, CHECKOUTS.length)];
   }
 
   // Функция возвращает объект
