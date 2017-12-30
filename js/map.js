@@ -64,7 +64,7 @@
         y: evt.clientY
       };
 
-      var onMouseMove = function (moveEvt) {
+      function onMouseMove(moveEvt) {
         moveEvt.preventDefault();
 
         var shift = {
@@ -87,14 +87,14 @@
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
 
         document.querySelector('input[name = \'address\']').value = 'x: ' + mainPin.style.left.replace('px', '') + ', y: ' + mainPin.style.top.replace('px', '');
-      };
+      }
 
-      var onMouseUp = function (upEvt) {
+      function onMouseUp(upEvt) {
         upEvt.preventDefault();
 
         map.removeEventListener('mousemove', onMouseMove);
         map.removeEventListener('mouseup', onMouseUp);
-      };
+      }
 
       map.addEventListener('mousemove', onMouseMove);
       map.addEventListener('mouseup', onMouseUp);

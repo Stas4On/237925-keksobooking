@@ -35,19 +35,19 @@ window.cardUtil = (function () {
     // Функция отрисовки карточек объявлений
     renderAd: function (ad) {
       var similarAds = document.querySelector('template').content.cloneNode(true);
-      var adsElement = similarAds.querySelector('.map__card');
+      var cardAds = similarAds.querySelector('.map__card');
 
-      var ul = adsElement.querySelector('.popup__features');
+      var featuresList = cardAds.querySelector('.popup__features');
 
-      adsElement.querySelector('img').setAttribute('src', ad.author.avatar);
-      adsElement.querySelector('h3').textContent = ad.offer.title;
-      adsElement.querySelector('.popup__price').innerHTML = ad.offer.price + '&#x20bd;/ночь';
-      adsElement.querySelector('h4').textContent = getType(ad.offer.type);
-      adsElement.querySelector('.popup__rooms').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
-      adsElement.querySelector('.popup__checkin').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
-      adsElement.querySelector('.popup__description').textContent = ad.offer.description;
+      cardAds.querySelector('img').setAttribute('src', ad.author.avatar);
+      cardAds.querySelector('h3').textContent = ad.offer.title;
+      cardAds.querySelector('.popup__price').innerHTML = ad.offer.price + '&#x20bd;/ночь';
+      cardAds.querySelector('h4').textContent = getType(ad.offer.type);
+      cardAds.querySelector('.popup__rooms').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
+      cardAds.querySelector('.popup__checkin').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
+      cardAds.querySelector('.popup__description').textContent = ad.offer.description;
       // Удаление элементов списка
-      ul.innerHTML = '';
+      featuresList.innerHTML = '';
 
       // Добавление элементов списка
       var fragment = document.createDocumentFragment();
@@ -60,9 +60,9 @@ window.cardUtil = (function () {
         fragment.appendChild(li);
       }
 
-      ul.appendChild(fragment);
+      featuresList.appendChild(fragment);
 
-      return adsElement;
+      return cardAds;
     }
   };
 })();
