@@ -4,14 +4,14 @@
   var COUNT_PINS = 5;
 
   var pins = [];
-  var mapPins = document.querySelector('.map__pins');
-  var sortForm = document.querySelector('.map__filters');
+  var mapPinsElement = document.querySelector('.map__pins');
+  var sortFormElement = document.querySelector('.map__filters');
 
   // Записывает загруженные данные в переменную и передает данные в функцию отрисовки пинов на карте
-  var onLoad = function (data) {
+  function onLoad(data) {
     pins = data;
     window.renderPins(pins);
-  };
+  }
 
   // Добавляет пины на карту
   function addMapPins() {
@@ -30,19 +30,19 @@
       var fragment = document.createDocumentFragment();
 
       var takeNumber = data.length > COUNT_PINS ? COUNT_PINS : data.length;
-      var mapPin = mapPins.querySelector('.map__pin--main').cloneNode(true);
-      mapPins.innerHTML = '';
-      mapPins.appendChild(mapPin);
+      var mapPinElement = mapPinsElement.querySelector('.map__pin--main').cloneNode(true);
+      mapPinsElement.innerHTML = '';
+      mapPinsElement.appendChild(mapPinElement);
       dragMainPin();
       for (var i = 0; i < takeNumber; i++) {
         fragment.appendChild(window.pinUtil.renderPin(data[i]));
       }
 
-      mapPins.appendChild(fragment);
+      mapPinsElement.appendChild(fragment);
     };
 
     // Сортирует пины при изменении формы
-    sortForm.addEventListener('change', function (e) {
+    sortFormElement.addEventListener('change', function (e) {
       e.preventDefault();
 
       window.debounce(function () {
@@ -55,8 +55,8 @@
 
   // Перетаскивание основного пина
   function dragMainPin() {
-    var mainPin = map.querySelector('.map__pin--main');
-    mainPin.addEventListener('mousedown', function (evt) {
+    var mainPinElement = mapElement.querySelector('.map__pin--main');
+    mainPinElement.addEventListener('mousedown', function (evt) {
       evt.preventDefault();
 
       var startCoordinates = {
@@ -77,41 +77,41 @@
           y: moveEvt.clientY
         };
 
-        if (mainPin.offsetTop - shift.y > 500) {
-          mainPin.style.top = '500px';
-        } else if (mainPin.offsetTop - shift.y < 100) {
-          mainPin.style.top = '100px';
+        if (mainPinElement.offsetTop - shift.y > 500) {
+          mainPinElement.style.top = '500px';
+        } else if (mainPinElement.offsetTop - shift.y < 100) {
+          mainPinElement.style.top = '100px';
         } else {
-          mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+          mainPinElement.style.top = (mainPinElement.offsetTop - shift.y) + 'px';
         }
-        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+        mainPinElement.style.left = (mainPinElement.offsetLeft - shift.x) + 'px';
 
-        document.querySelector('input[name = \'address\']').value = 'x: ' + mainPin.style.left.replace('px', '') + ', y: ' + mainPin.style.top.replace('px', '');
+        document.querySelector('input[name = \'address\']').value = 'x: ' + mainPinElement.style.left.replace('px', '') + ', y: ' + mainPinElement.style.top.replace('px', '');
       }
 
       function onMouseUp(upEvt) {
         upEvt.preventDefault();
 
-        map.removeEventListener('mousemove', onMouseMove);
-        map.removeEventListener('mouseup', onMouseUp);
+        mapElement.removeEventListener('mousemove', onMouseMove);
+        mapElement.removeEventListener('mouseup', onMouseUp);
       }
 
-      map.addEventListener('mousemove', onMouseMove);
-      map.addEventListener('mouseup', onMouseUp);
+      mapElement.addEventListener('mousemove', onMouseMove);
+      mapElement.addEventListener('mouseup', onMouseUp);
     });
   }
 
   // активирует карту и форму, запускает рендер пинов и добавление к ним обработчиков
   function startUsed(evt) {
     evt.currentTarget.removeEventListener('mouseup', startUsed);
-    var form = document.querySelector('.notice__form');
-    map.classList.remove('map--faded');
-    form.classList.remove('notice__form--disabled');
+    var formElement = document.querySelector('.notice__form');
+    mapElement.classList.remove('map--faded');
+    formElement.classList.remove('notice__form--disabled');
     addMapPins();
     // Убирает свойство disabled у fieldset формы
-    var formElement = form.querySelectorAll('.form__element');
+    var formElements = formElement.querySelectorAll('.form__element');
     for (var i = 0; i < formElement.length; i++) {
-      formElement[i].removeAttribute('disabled');
+      formElements[i].removeAttribute('disabled');
     }
     // Добавляет обработчик события на главный пин
     // при клике переносит --active на него, закрывает попап
@@ -126,7 +126,7 @@
 
   // Работа с DOM
   var status = document.querySelector('.status__download');
-  var map = document.querySelector('.map');
-  map.querySelector('.map__pin--main').addEventListener('mouseup', startUsed);
+  var mapElement = document.querySelector('.map');
+  mapElement.querySelector('.map__pin--main').addEventListener('mouseup', startUsed);
 
 })();

@@ -3,18 +3,18 @@
 // отрисовывает попап и добавляет обработчик кнопке закрытия и document
 (function () {
   window.showCard = function (obj) {
-    var map = document.querySelector('.map');
-    var mapFilter = map.querySelector('.map__filters-container');
-    var popup = map.querySelector('.popup');
-    if (popup) {
-      map.removeChild(popup);
+    var mapElement = document.querySelector('.map');
+    var mapFilterElement = mapElement.querySelector('.map__filters-container');
+    var popupElement = mapElement.querySelector('.popup');
+    if (popupElement) {
+      mapElement.removeChild(popupElement);
     }
 
-    popup = window.cardUtil.renderAd(obj);
-    map.insertBefore(popup, mapFilter);
+    popupElement = window.cardUtil.renderAd(obj);
+    mapElement.insertBefore(popupElement, mapFilterElement);
 
-    var popupClose = map.querySelector('.popup__close');
-    popupClose.addEventListener('click', function () {
+    var popupCloseElement = mapElement.querySelector('.popup__close');
+    popupCloseElement.addEventListener('click', function () {
       window.cardUtil.closePopup();
     });
     document.addEventListener('keydown', window.cardUtil.onPopupEscPress);

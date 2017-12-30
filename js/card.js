@@ -14,14 +14,14 @@ window.cardUtil = (function () {
     return 'Дом';
   }
 
-  var map = document.querySelector('.map');
+  var mapElement = document.querySelector('.map');
 
   return {
     // Закрыти попапа со снятием признака активности у пина и удаление обработчика у document
     closePopup: function () {
-      var popup = map.querySelector('.popup');
-      if (popup) {
-        map.removeChild(popup);
+      var popupElement = mapElement.querySelector('.popup');
+      if (popupElement) {
+        mapElement.removeChild(popupElement);
       }
       window.pinUtil.removePinActive();
       document.removeEventListener('keydown', window.cardUtil.onPopupEscPress);
@@ -34,35 +34,35 @@ window.cardUtil = (function () {
     },
     // Функция отрисовки карточек объявлений
     renderAd: function (ad) {
-      var similarAds = document.querySelector('template').content.cloneNode(true);
-      var cardAds = similarAds.querySelector('.map__card');
+      var similarAdsElement = document.querySelector('template').content.cloneNode(true);
+      var adsElement = similarAdsElement.querySelector('.map__card');
 
-      var featuresList = cardAds.querySelector('.popup__features');
+      var featuresListElement = adsElement.querySelector('.popup__features');
 
-      cardAds.querySelector('img').setAttribute('src', ad.author.avatar);
-      cardAds.querySelector('h3').textContent = ad.offer.title;
-      cardAds.querySelector('.popup__price').innerHTML = ad.offer.price + '&#x20bd;/ночь';
-      cardAds.querySelector('h4').textContent = getType(ad.offer.type);
-      cardAds.querySelector('.popup__rooms').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
-      cardAds.querySelector('.popup__checkin').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
-      cardAds.querySelector('.popup__description').textContent = ad.offer.description;
+      adsElement.querySelector('img').setAttribute('src', ad.author.avatar);
+      adsElement.querySelector('h3').textContent = ad.offer.title;
+      adsElement.querySelector('.popup__price').innerHTML = ad.offer.price + '&#x20bd;/ночь';
+      adsElement.querySelector('h4').textContent = getType(ad.offer.type);
+      adsElement.querySelector('.popup__rooms').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
+      adsElement.querySelector('.popup__checkin').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
+      adsElement.querySelector('.popup__description').textContent = ad.offer.description;
       // Удаление элементов списка
-      featuresList.innerHTML = '';
+      featuresListElement.innerHTML = '';
 
       // Добавление элементов списка
       var fragment = document.createDocumentFragment();
 
       for (var i = 0; i < ad.offer.features.length; i++) {
-        var li = document.createElement('li');
-        li.classList.add('feature');
-        li.classList.add('feature--' + ad.offer.features[i]);
+        var liElement = document.createElement('li');
+        liElement.classList.add('feature');
+        liElement.classList.add('feature--' + ad.offer.features[i]);
 
-        fragment.appendChild(li);
+        fragment.appendChild(liElement);
       }
 
-      featuresList.appendChild(fragment);
+      featuresListElement.appendChild(fragment);
 
-      return cardAds;
+      return adsElement;
     }
   };
 })();
