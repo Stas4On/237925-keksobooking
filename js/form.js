@@ -18,9 +18,9 @@
   // возвращает массив значений select
   function getValues(element) {
     var values = [];
-    var options = element.querySelectorAll('option');
-    for (var i = 0; i < options.length; i++) {
-      values[i] = options[i].value;
+    var optionsElement = element.querySelectorAll('option');
+    for (var i = 0; i < optionsElement.length; i++) {
+      values[i] = optionsElement[i].value;
     }
 
     return values;
@@ -36,50 +36,50 @@
 
   function onLoad(data) {
     data.reset();
-    status.textContent = 'Данные успешно отправлены';
-    status.setAttribute('style', 'border-color: #5cce5b; background-color: #a6f5a5');
+    statusElement.textContent = 'Данные успешно отправлены';
+    statusElement.setAttribute('style', 'border-color: #5cce5b; background-color: #a6f5a5');
     setTimeout(function () {
-      status.textContent = '';
-      status.setAttribute('style', 'border-color: transparent');
+      statusElement.textContent = '';
+      statusElement.setAttribute('style', 'border-color: transparent');
     }, 3000);
   }
 
   function onError(message) {
-    status.textContent = message;
-    status.setAttribute('style', 'border-color: #fa9; background-color: #ffdde5');
+    statusElement.textContent = message;
+    statusElement.setAttribute('style', 'border-color: #fa9; background-color: #ffdde5');
     setTimeout(function () {
-      status.textContent = '';
-      status.setAttribute('style', 'border-color: transparent');
+      statusElement.textContent = '';
+      statusElement.setAttribute('style', 'border-color: transparent');
     }, 5000);
   }
 
-  var form = document.querySelector('.notice__form');
-  var status = document.querySelector('.status__upload');
-  var timeIn = form.querySelector('select[name = \'timein\']');
-  var timeOut = form.querySelector('select[name = \'timeout\']');
-  var type = form.querySelector('select[name = \'type\']');
-  var price = form.querySelector('input[name = \'price\']');
-  var capacity = form.querySelector('select[name = \'capacity\']');
-  var room = form.querySelector('select[name = \'rooms\']');
+  var formElement = document.querySelector('.notice__form');
+  var statusElement = document.querySelector('.status__upload');
+  var timeInElement = formElement.querySelector('select[name = \'timein\']');
+  var timeOutElement = formElement.querySelector('select[name = \'timeout\']');
+  var typeElement = formElement.querySelector('select[name = \'type\']');
+  var priceElement = formElement.querySelector('input[name = \'price\']');
+  var capacityElement = formElement.querySelector('select[name = \'capacity\']');
+  var roomElement = formElement.querySelector('select[name = \'rooms\']');
 
-  type.addEventListener('change', function () {
-    window.synchronizeFields(type, price, getValues(type), [1000, 0, 5000, 10000], syncValueWithMin);
+  typeElement.addEventListener('change', function () {
+    window.synchronizeFields(typeElement, priceElement, getValues(typeElement), [1000, 0, 5000, 10000], syncValueWithMin);
   });
 
-  timeIn.addEventListener('change', function () {
-    window.synchronizeFields(timeIn, timeOut, getValues(timeIn), getValues(timeOut), syncValues);
+  timeInElement.addEventListener('change', function () {
+    window.synchronizeFields(timeInElement, timeOutElement, getValues(timeInElement), getValues(timeOutElement), syncValues);
   });
 
-  timeOut.addEventListener('change', function () {
-    window.synchronizeFields(timeOut, timeIn, getValues(timeOut), getValues(timeIn), syncValues);
+  timeOutElement.addEventListener('change', function () {
+    window.synchronizeFields(timeOutElement, timeInElement, getValues(timeOutElement), getValues(timeInElement), syncValues);
   });
 
-  form.addEventListener('submit', function (event) {
-    if (checkCapacity(capacity, room)) {
+  formElement.addEventListener('submit', function (event) {
+    if (checkCapacity(capacityElement, roomElement)) {
       event.preventDefault();
     } else {
       event.preventDefault();
-      window.request.upload(form, onLoad, onError);
+      window.request.upload(formElement, onLoad, onError);
     }
   });
 })();

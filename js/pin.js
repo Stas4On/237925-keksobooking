@@ -1,15 +1,15 @@
 'use strict';
 
 window.pinUtil = (function () {
-  var map = document.querySelector('.map');
+  var mapElement = document.querySelector('.map');
   return {
     // Функция отрисовки указателей
     renderPin: function (ad) {
-      var mapPin = document.querySelector('.map__pin');
-      var pinElement = mapPin.cloneNode();
+      var mapPinElement = document.querySelector('.map__pin');
+      var pinElement = mapPinElement.cloneNode();
       var pinElementImg = document.querySelector('.map__pin img').cloneNode();
 
-      pinElement.setAttribute('style', 'left: ' + (ad.location.x - mapPin.getAttribute('width') / 2) + 'px; top: ' + (ad.location.y - (+mapPin.getAttribute('height') + 18)) + 'px;');
+      pinElement.setAttribute('style', 'left: ' + (ad.location.x - mapPinElement.getAttribute('width') / 2) + 'px; top: ' + (ad.location.y - (+mapPinElement.getAttribute('height') + 18)) + 'px;');
       pinElement.setAttribute('class', 'map__pin');
       pinElementImg.setAttribute('src', ad.author.avatar);
       pinElementImg.setAttribute('width', '40');
@@ -26,7 +26,7 @@ window.pinUtil = (function () {
     },
 
     removePinActive: function () {
-      var clickedElement = map.querySelector('.map__pin--active');
+      var clickedElement = mapElement.querySelector('.map__pin--active');
       if (clickedElement) {
         clickedElement.classList.remove('map__pin--active');
       }

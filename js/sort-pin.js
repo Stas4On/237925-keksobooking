@@ -1,29 +1,29 @@
 'use strict';
 
 (function () {
-  var sortForm = document.querySelector('.map__filters');
-  var typeHouse = sortForm.querySelector('select[name = \'housing-type\']');
-  var priceHouse = sortForm.querySelector('select[name = \'housing-price\']');
-  var roomsHouse = sortForm.querySelector('select[name = \'housing-rooms\']');
-  var guestsHouse = sortForm.querySelector('select[name = \'housing-guests\']');
+  var sortFormElement = document.querySelector('.map__filters');
+  var typeHouseElement = sortFormElement.querySelector('select[name = \'housing-type\']');
+  var priceHouseElement = sortFormElement.querySelector('select[name = \'housing-price\']');
+  var roomsHouseElement = sortFormElement.querySelector('select[name = \'housing-rooms\']');
+  var guestsHouseElement = sortFormElement.querySelector('select[name = \'housing-guests\']');
 
   // Фильтрует пины созласно значениям в полях формы
   window.updatePins = function (pins) {
     var features = [];
-    var featuresHouse = sortForm.querySelectorAll('input:checked');
-    for (var i = 0; i < featuresHouse.length; i++) {
-      features.push(featuresHouse[i].value);
+    var featuresHouseElements = sortFormElement.querySelectorAll('input:checked');
+    for (var i = 0; i < featuresHouseElements.length; i++) {
+      features.push(featuresHouseElements[i].value);
     }
 
     var sortPins = pins.filter(function (it) {
-      switch (typeHouse.value) {
+      switch (typeHouseElement.value) {
         case 'any':
           return it.offer.type;
       }
 
-      return it.offer.type === typeHouse.value;
+      return it.offer.type === typeHouseElement.value;
     }).filter(function (it) {
-      switch (priceHouse.value) {
+      switch (priceHouseElement.value) {
         case 'middle':
           return it.offer.price >= 10000 && it.offer.price <= 50000;
         case 'low':
@@ -34,19 +34,19 @@
 
       return it.offer.price;
     }).filter(function (it) {
-      switch (roomsHouse.value) {
+      switch (roomsHouseElement.value) {
         case 'any':
           return it.offer.rooms;
       }
 
-      return it.offer.rooms === +roomsHouse.value;
+      return it.offer.rooms === +roomsHouseElement.value;
     }).filter(function (it) {
-      switch (guestsHouse.value) {
+      switch (guestsHouseElement.value) {
         case 'any':
           return it.offer.guests;
       }
 
-      return it.offer.guests === +guestsHouse.value;
+      return it.offer.guests === +guestsHouseElement.value;
     }).filter(function (it) {
 
       return features.every(function (value) {
